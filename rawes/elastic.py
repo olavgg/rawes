@@ -15,9 +15,12 @@
 #
 
 try:
-    import simplejson as json
+    import ujson as json
 except ImportError:
-    import json
+    try:
+        import simplejson as json
+    except ImportError:
+        import json
 
 from thrift_connection import ThriftConnection
 from http_connection import HttpConnection
