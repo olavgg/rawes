@@ -52,3 +52,7 @@ tmtags
 
 # Node
 node_modules
+
+.project
+.pydevproject
+

@@ -15,9 +15,12 @@
 #
 
 try:
-    import simplejson as json
+    import ujson as json
 except ImportError:
-    import json
+    try:
+        import simplejson as json
+    except ImportError:
+        import json
 
 import requests
 
@@ -32,10 +35,13 @@ class HttpConnection(object):
         self.url = '%s://%s:%s' % (self.protocol, self.host, self.port)
 
     def request(self, method, path, **kwargs):
-        response = self.session.request(method, '%s/%s' % (self.url, path), **kwargs)
+        response = self.session.request(
+            method, '%s/%s' % (self.url, path), **kwargs)
         return self._decode(response)
 
     def _decode(self, response):
         if (response.text == ''):
             return response.status_code < 300
-        return json.loads(response.text)
+        json_data = json.loads(response.text)
+        json_data['status'] = response.status_code
+        return json_data
