@@ -22,6 +22,7 @@ except ImportError:
     except ImportError:
         import json
 
+
 import requests
 
 class HttpConnection(object):
@@ -42,6 +43,9 @@ class HttpConnection(object):
     def _decode(self, response):
         if (response.text == ''):
             return response.status_code < 300
-        json_data = json.loads(response.text)
+        try:
+            json_data = json.loads(response.text)
+        except ValueError:
+            json_data = {'error':response.text}
         json_data['status'] = response.status_code
         return json_data

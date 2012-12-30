@@ -75,10 +75,12 @@ class ThriftConnection(object):
         mapped_method = ThriftConnection.method_mappings[method]
         request = RestRequest(method=mapped_method, uri=path, **thriftargs)
         response = self.client.execute(request)
-
         return self._decode(response)
 
     def _decode(self, response):
+        print response
+        if response.body == None:
+            response.body = '{}'
         if (response.body == ''):
             return response.status < 300
         return json.loads(response.body)

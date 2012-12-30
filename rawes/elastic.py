@@ -24,7 +24,6 @@ except ImportError:
 
 from thrift_connection import ThriftConnection
 from http_connection import HttpConnection
-from rawes.encoders import encode_date_optional_time
 
 class Elastic(object):
     """Connect to an elasticsearch instance"""
@@ -70,18 +69,9 @@ class Elastic(object):
 
     def request(self, method, path, **kwargs):
         new_path = self._build_path(self.path, path)
-
-        # Look for a custom json encoder
-        if 'json_encoder' in kwargs:
-            json_encoder = kwargs['json_encoder']
-            del kwargs['json_encoder']
-        else:
-            json_encoder = encode_date_optional_time
-
         # Encode data dict to json if necessary
         if 'data' in kwargs and type(kwargs['data']) == dict:
-            kwargs['data'] = json.dumps(kwargs['data'], default=json_encoder)
-
+            kwargs['data'] = json.dumps(kwargs['data'])
         return self.connection.request(method, new_path, **kwargs)
 
     def __getattr__(self, path_item):
